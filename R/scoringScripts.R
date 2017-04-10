@@ -10,7 +10,7 @@
 #' @param MaxAnno maximum number of annotations to select
 #'
 #' @return a list with two elements: a named vector of Scores and a matrix of EnrichedAnnotations
-#' @importFrom Matrix Matrix
+#' @import Matrix
 #' @importFrom corpcor fast.svd
 #' @export
 makeScore<-function(AnnotationMatrix=NULL,TrainingGenes=NULL,MinPerAnno=5, OR=1.5,PVal=.01,MinAnno=5,MaxAnno=200)
