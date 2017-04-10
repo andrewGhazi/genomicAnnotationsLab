@@ -17,7 +17,6 @@ makeScore<-function(AnnotationMatrix=NULL,TrainingGenes=NULL,MinPerAnno=5, OR=1.
 {
   aset <- TrainingGenes
   A <- AnnotationMatrix
-  require(corpcor)
   ### Compute Annotations Enriched in Gene Set
   enrich<-makeEnrichment(aset,
                          adj = A)
