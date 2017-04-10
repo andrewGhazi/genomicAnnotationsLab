@@ -28,7 +28,7 @@ Before getting started, let's load some useful packages software packages:
 #tidyverse
 library(tidyverse) # for data tidying, manipulating, and visualizing. Includes dplyr and ggplot2 among others
 library(genomicAnnotationsLab) # Loads in the scoring functions and data
-library(stringr)
+library(stringr) # tidy manipulation of strings
 
 ```
 
