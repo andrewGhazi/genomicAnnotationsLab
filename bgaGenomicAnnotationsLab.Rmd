@@ -1,0 +1,142 @@
+---
+title: "BGA Genomic Annotations Lab"
+author: "Andrew Ghazi, Chad Shaw Laboratory"
+date: "4/6/2017"
+output: html_document
+---
+
+```{r set-options, echo=FALSE}
+options(width = 800)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = TRUE)
+```
+
+## Note on R coding style
+
+This lab is designed to adhere to tidy principles where possible. This means keeping data in data_frames with rows representing observations and columns as variables. 
+
+It also makes use of pipes `%>%` which take their left hand side and pipe it into the right-hand side as the first argument. Pipes are THE BEST, so make sure to internalize the keyboard shortcut to insert them: `ctrl + shift + M` (`⌘ + shift + M` on Mac) 
+
+## Setup
+
+### Libraries, scripts
+Before getting started, let's load some useful packages software packages:
+```{r, message=FALSE}
+#tidyverse
+library(tidyverse) # for data tidying, manipulating, and visualizing. Includes dplyr and ggplot2 among others
+library(genomicAnnotationsLab) # Loads in the scoring functions and data
+library(stringr)
+
+```
+
+### Data
+Read in the genes that contain eQTLs that effect their expression in platelets. These are termed 'eGenes'.
+
+```{r, message = FALSE}
+eGenes %>% head
+```
+
+Also read in the Gene Ontology terms
+```{r, cache.lazy=FALSE}
+
+dim(humanGO)
+humanGO[1:5,1:5] #Print a small sample
+goterms
+
+```
+
+## AnnoGene Scoring
+
+AnnoGene takes a set of annotations and a set of genes. AnnoGene uses the covariance of annotations in a given gene set's annotations to find which terms are enriched.
+
+```{r}
+annogeneOutput = makeScore(humanGO, eGenes)
+
+geneScores = data_frame(gene_symbol = names(annogeneOutput$Scores), #create a data_frame with the scores and symbols
+                        score = annogeneOutput$Scores,
+                        inTrainSet = gene_symbol %in% eGenes) %>% 
+  arrange(desc(score)) %>% #order it by score
+  mutate(gene_symbol = factor(gene_symbol, levels = gene_symbol)) %>% #convert the symbol to a factor
+  filter(!is.na(score)) #remove the one gene that wasn't in the annotation source
+
+enrichedAnnotations = annogeneOutput$Enriched.Annotations %>% #create a data_frame from the enriched annotation information
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  as.tbl %>% 
+  mutate(Count = as.integer(Count), # convert them to the appropriate types
+         Total = as.integer(Total),
+         OddsRatio = as.numeric(OddsRatio),
+         Pvalue = as.numeric(Pvalue),
+         Genes = str_split(Genes, ',')) %>% # List column!
+  arrange(Pvalue) %>% # arrange by p value
+  rename(ID = TermID) %>% #rename for the join
+  left_join(goterms, by = 'ID') #join to the term description matrix from before
+```
+
+### Inspect enriched annotations
+
+Let's look at what terms characterize our platelet eGenes. AnnoGene defaults to a Pvalue < .01 cutoff, but since we're selecting from thousands of GO terms let's impose an $\alpha$ = .05 Bonferroni-adjusted cutoff. 
+```{r}
+enrichedAnnotations %>% 
+  filter(Pvalue < .05 / ncol(humanGO))
+```
+
+The top enriched term is 'cytoplasm'. Given that platelets don't have nuclei, this makes sense!
+
+### Inspect Scoring Results
+
+`geneScores` is a data_frame containing the similarity scores of each gene to the training set, as well as an indicator variable stating whether or not it was in the training set.
+```{r}
+geneScores
+```
+
+We can plot each gene's rank against its score and color according to whether or not it belonged to the training set to see how well it turned out.
+```{r}
+geneScores %>% 
+  mutate(rank = 1:nrow(geneScores)) %>% # It's sorted already, so add a ranking variable
+  ggplot(aes(rank, score)) + # initialize the ggplot
+  geom_col(aes(color = inTrainSet, # Add a bar for each gene
+               fill = inTrainSet)) +
+  scale_fill_manual(values = c('grey80', 'red')) + #set the colors to be used
+  scale_color_manual(values = c('grey80', 'red')) +
+  theme(text = element_text(size = 14))
+```
+
+```{r}
+geneScores %>% 
+  ggplot(aes(inTrainSet, score)) + 
+  geom_point(position = 'jitter', alpha = .2, shape = 16) +
+  geom_violin(alpha = 0, color = 'red')
+```
+
+
+The training set is clearly enriched among higher scoring genes. However there are also training genes with very low scores -- this implies that there's some degree of heterogeneity among the training genes. Let's take a look at the genes that are high scoring and NOT in the training set.
+
+```{r}
+geneScores %>% 
+  filter(!inTrainSet, score > 2.5)
+```
+
+These can be prioritized as potential new members of the training set in followup studies.
+
+## Lab problems
+
+1. Choose an alternate annotation source among these datasets: MGI, PPI, or some other genomic annotation source of your own choosing. While the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under 'GO:000002 mitochondrial genome maintenance') AnnoGene also works for continuous annotations.  <span style="color:red">TODO</span> Have some other annotation matrices already prepared?
+
+2. Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with `rownames(mat) = gene_name_vector` and `colnames(mat) = annotation_variable_name_vector`).
+
+3. Select your favorite set of genes.
+
+4. Run AnnoGene by calling `makeScore(AnnotationMatrix, TrainingGenes)`. This outputs a list with two elements. The first, named 'Scores' is a named vector giving the score for each gene. The second, 'Enriched.Annotations', is a matrix. If you'd like to tidy them into data_frames, lift over the code from the lab. Interpret your results like we did in the lab:  
+* Use ggplot2 (or other plotting software as you prefer) to visualize where the training set falls in the score distribution.
+* What are some high-scoring genes not in the training set? 
+* Why do you think they scored highly?
+* What terms/variables are characteristic of your training set?
+* Why do you think they are characteristic?
+
+
+
+
+
