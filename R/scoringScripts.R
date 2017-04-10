@@ -101,7 +101,7 @@ computeQform<-function(aindex,aadj,acovi,abg)
 #' @param gsyms a set of training genes
 #' @param adj an annotation matrix
 #' @param nom an optional vector of term names corresponding to the column names of the annotation matrix
-#' @importFrom Matrix Matrix
+#' @import Matrix
 #' @importFrom corpcor fast.svd
 makeEnrichment <- function (gsyms, adj = NULL, nom = NULL)
 {
