@@ -1,4 +1,4 @@
-BGA Genomic Annotations Lab Pre-Lab
+# BGA Genomic Annotations Lab Pre-Lab
 
 ## Do this if you haven't already
 
