@@ -1,6 +1,6 @@
 ---
 title: "BGA Genomic Annotations Lab"
-author: "Andrew Ghazi, Chad Shaw Laboratory"
+author: "Chad Shaw Laboratory"
 date: "4/6/2017"
 output: html_document
 ---
@@ -33,7 +33,12 @@ library(stringr) # tidy manipulation of strings
 ```
 
 ### Data
-Read in the genes that contain eQTLs that effect their expression in platelets. These are termed 'eGenes'.
+
+The package loads in 3 objects: 
+
+* eGenes- a character vector containing genes that contain eQTLs that effect their expression in platelets.
+* humanGO - a sparse matrix describing which genes (rows) are annotated under which Gene Ontology (GO) terms
+* goterms - a data frame containing a mapping between GO IDs (e.g. GO:0000011) and (e.g. vacuole inheritance).
 
 ```{r, message = FALSE}
 eGenes %>% head

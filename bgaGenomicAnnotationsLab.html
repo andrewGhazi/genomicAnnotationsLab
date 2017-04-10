@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Andrew Ghazi, Chad Shaw Laboratory" />
+<meta name="author" content="Chad Shaw Laboratory" />
 
 
 <title>BGA Genomic Annotations Lab</title>
@@ -117,7 +117,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">BGA Genomic Annotations Lab</h1>
-<h4 class="author"><em>Andrew Ghazi, Chad Shaw Laboratory</em></h4>
+<h4 class="author"><em>Chad Shaw Laboratory</em></h4>
 <h4 class="date"><em>4/6/2017</em></h4>
 
 </div>
@@ -136,11 +136,16 @@ $(document).ready(function () {
 <pre class="r"><code>#tidyverse
 library(tidyverse) # for data tidying, manipulating, and visualizing. Includes dplyr and ggplot2 among others
 library(genomicAnnotationsLab) # Loads in the scoring functions and data
-library(stringr)</code></pre>
+library(stringr) # tidy manipulation of strings</code></pre>
 </div>
 <div id="data" class="section level3">
 <h3>Data</h3>
-<p>Read in the genes that contain eQTLs that effect their expression in platelets. These are termed ‘eGenes’.</p>
+<p>The package loads in 3 objects:</p>
+<ul>
+<li>eGenes- a character vector containing genes that contain eQTLs that effect their expression in platelets.</li>
+<li>humanGO - a sparse matrix describing which genes (rows) are annotated under which Gene Ontology (GO) terms</li>
+<li>goterms - a data frame containing a mapping between GO IDs (e.g. <a href="GO:0000011" class="uri">GO:0000011</a>) and (e.g. vacuole inheritance).</li>
+</ul>
 <pre class="r"><code>eGenes %&gt;% head</code></pre>
 <pre><code>## [1] &quot;SMAD5&quot;  &quot;TMEM56&quot; &quot;FHL3&quot;   &quot;MFN2&quot;   &quot;AKAP9&quot;  &quot;DHRS7&quot;</code></pre>
 <p>Also read in the Gene Ontology terms</p>
