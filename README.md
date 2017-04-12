@@ -1,6 +1,6 @@
 # BGA Genomic Annotations Lab Pre-Lab
 
-## Do this if you haven't already
+## Install Software
 
 * Install R: [https://cran.r-project.org/](https://cran.r-project.org/)
 * Install RStudio: [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/)
