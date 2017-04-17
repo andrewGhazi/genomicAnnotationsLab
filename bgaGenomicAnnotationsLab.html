@@ -123,11 +123,11 @@ $(document).ready(function () {
 </div>
 
 
-<p>This document was created at Mon Apr 17 14:09:37 2017. If there are any changes they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
+<p>This document was created at Mon Apr 17 14:50:43 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
 <div id="note-on-r-coding-style" class="section level2">
 <h2>Note on R coding style</h2>
 <p>This lab is designed to adhere to tidy principles where possible. This means keeping data in data_frames with rows representing observations and columns as variables.</p>
-<p>It also makes use of pipes <code>%&gt;%</code> which take their left hand side and pipe it into the right-hand side as the first argument. Pipes are THE BEST, so make sure to internalize the keyboard shortcut to insert them: <code>ctrl + shift + M</code> (<code>⌘ + shift + M</code> on Mac)</p>
+<p>It also makes use of pipes <code>%&gt;%</code> which take their left hand side and pipe it into the right-hand side as the first argument. Pipes are THE BEST, so make sure to internalize the keyboard shortcut to insert them: <code>ctrl + shift + M</code> (<code>⌘ + shift + M</code> on Mac).</p>
 </div>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
@@ -289,11 +289,13 @@ enrichedAnnotations = annoOutput$Enriched.Annotations %&gt;% #create a data_fram
 </div>
 <div id="lab-problems" class="section level2">
 <h2>Lab problems</h2>
+<p>For the homework, you’ll repeat the lab with a different annotation source and gene set. Show your code and appropriate outputs in a document. If you’d like to learn how to author analysis documents (like this lab), RMarkdown would be a good way to do this.</p>
 <ol style="list-style-type: decimal">
-<li><p>Choose an alternate annotation source among these datasets: MGI, PPI, or some other genomic annotation source of your own choosing. While the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under ‘<a href="GO:000002" class="uri">GO:000002</a> mitochondrial genome maintenance’) this method also works for continuous annotations.</p></li>
-<li><p>Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with <code>rownames(mat) = gene_name_vector</code> and <code>colnames(mat) = annotation_variable_name_vector</code>).</p></li>
-<li><p>Select your favorite set of genes.</p></li>
-<li>Run the annotation software by calling <code>makeScore(AnnotationMatrix, TrainingGenes)</code>. This outputs a list with two elements. The first, named ‘Scores’ is a named vector giving the score for each gene. The second, ‘Enriched.Annotations’, is a matrix. If you’d like to tidy them into data_frames, lift over the code from the lab. Interpret your results like we did in the lab:<br />
+<li><p>Choose an alternate annotation source. There’s another dataset called <code>miRNA</code> included with the package that shows how &gt;30,000 genes are annotated in miRBase. You can use this but you can earn a bonus point if you compile your own annotation matrix from a source that’s personally interesting to you :).<br />
+Note that while the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under ‘<a href="GO:000002" class="uri">GO:000002</a>’) this method also works for continuous annotations.</p></li>
+<li><p>Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with <code>rownames(mat) = gene_name_vector</code> and <code>colnames(mat) = annotation_variable_name_vector</code>). Use <code>Matrix::Matrix()</code> if the matrix is sparse and uses too much memory.</p></li>
+<li><p>Select your favorite set of genes and import them into R as a character vector. Make sure there’s enough that they could conceivably show some characteristic patterns (use <code>length()</code>). Check what fraction of them are annotated in your annotation source (hint: use <code>%in%</code>).</p></li>
+<li>Run the annotation software by calling <code>makeScore(AnnotationMatrix, TrainingGenes)</code>. This outputs a list with two elements. The first, named ‘Scores’ is a named vector giving the score for each gene. The second, ‘Enriched.Annotations’, is a matrix. If you’d like to tidy them into data_frames, lift over the code from the lab. Provide some interpretation of your results like we did in the lab:<br />
 </li>
 </ol>
 <ul>

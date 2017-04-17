@@ -20,7 +20,7 @@ This document was created at `r date()`. If any changes have been introduced lat
 
 This lab is designed to adhere to tidy principles where possible. This means keeping data in data_frames with rows representing observations and columns as variables. 
 
-It also makes use of pipes `%>%` which take their left hand side and pipe it into the right-hand side as the first argument. Pipes are THE BEST, so make sure to internalize the keyboard shortcut to insert them: `ctrl + shift + M` (`⌘ + shift + M` on Mac) 
+It also makes use of pipes `%>%` which take their left hand side and pipe it into the right-hand side as the first argument. Pipes are THE BEST, so make sure to internalize the keyboard shortcut to insert them: `ctrl + shift + M` (`⌘ + shift + M` on Mac).
 
 ## Setup
 
@@ -53,7 +53,6 @@ Also read in the Gene Ontology terms
 dim(humanGO)
 humanGO[1:5,1:5] #Print a small sample
 goterms
-
 ```
 
 ## Annotation Scoring
@@ -131,13 +130,16 @@ These can be prioritized as potential new members of the training set in followu
 
 ## Lab problems
 
-1. Choose an alternate annotation source among these datasets: MGI, PPI, or some other genomic annotation source of your own choosing. While the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under 'GO:000002 mitochondrial genome maintenance') this method also works for continuous annotations.  
+For the homework, you'll repeat the lab with a different annotation source and gene set. Show your code and appropriate outputs in a document. If you'd like to learn how to author analysis documents (like this lab), RMarkdown would be a good way to do this.
 
-2. Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with `rownames(mat) = gene_name_vector` and `colnames(mat) = annotation_variable_name_vector`).
+1. Choose an alternate annotation source. There's another dataset called `miRNA` included with the package that shows how >30,000 genes are annotated in miRBase. You can use this but you can earn a bonus point if you compile your own annotation matrix from a source that's personally interesting to you :).  
+Note that while the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under 'GO:000002') this method also works for continuous annotations.  
 
-3. Select your favorite set of genes.
+2. Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with `rownames(mat) = gene_name_vector` and `colnames(mat) = annotation_variable_name_vector`). Use `Matrix::Matrix()` if the matrix is sparse and uses too much memory.
 
-4. Run the annotation software by calling `makeScore(AnnotationMatrix, TrainingGenes)`. This outputs a list with two elements. The first, named 'Scores' is a named vector giving the score for each gene. The second, 'Enriched.Annotations', is a matrix. If you'd like to tidy them into data_frames, lift over the code from the lab. Interpret your results like we did in the lab:  
+3. Select your favorite set of genes and import them into R as a character vector. Make sure there's enough that they could conceivably show some characteristic patterns (use `length()`). Check what fraction of them are annotated in your annotation source (hint: use `%in%`).
+
+4. Run the annotation software by calling `makeScore(AnnotationMatrix, TrainingGenes)`. This outputs a list with two elements. The first, named 'Scores' is a named vector giving the score for each gene. The second, 'Enriched.Annotations', is a matrix. If you'd like to tidy them into data_frames, lift over the code from the lab. Provide some interpretation of your results like we did in the lab:  
 * Use ggplot2 (or other plotting software as you prefer) to visualize where the training set falls in the score distribution.
 * What are some high-scoring genes not in the training set? 
 * Why do you think they scored highly?
