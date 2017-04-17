@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       cache = TRUE)
 ```
 
+This document was created at `r date()`. If any changes have been introduced lately they can be found [here](http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html).
+
 ## Note on R coding style
 
 This lab is designed to adhere to tidy principles where possible. This means keeping data in data_frames with rows representing observations and columns as variables. 
@@ -29,8 +31,9 @@ library(tidyverse) # for data tidying, manipulating, and visualizing. Includes d
 # library(dplyr); library(tidyr); library(ggplot2) # if the full tidyverse isn't installed
 library(genomicAnnotationsLab) # Loads in the scoring functions and data
 library(stringr) # tidy manipulation of strings
-
 ```
+
+Add the argument `lib.loc = '/home/student20/R/x86_64-redhat-linux-gnu-library/3.2'` to your calls to `library()` if you're running this on Sphere.
 
 ### Data
 

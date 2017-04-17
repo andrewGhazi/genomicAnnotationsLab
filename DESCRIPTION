@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Andrew Ghazi
 Maintainer: Andrew Ghazi <arghazi@bcm.edu>
 Description: BGA 2017 lab for scoring gene sets with genomic annotations
-Depends: R (>=3.1.0)
+Depends: R (>=3.2.3)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
