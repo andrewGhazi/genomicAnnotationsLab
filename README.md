@@ -8,3 +8,7 @@
 * Install this package: `devtools::install_github('andrewGhazi/genomicAnnotationsLab')`
 
 The lab itself should have been sent out as an HTML document!
+
+# Lab
+
+You can see the most up-to-date version of the lab [here](http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html).
