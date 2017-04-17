@@ -133,8 +133,8 @@ $(document).ready(function () {
 <div id="libraries-scripts" class="section level3">
 <h3>Libraries, scripts</h3>
 <p>Before getting started, let’s load some useful packages software packages:</p>
-<pre class="r"><code>#tidyverse
-library(tidyverse) # for data tidying, manipulating, and visualizing. Includes dplyr and ggplot2 among others
+<pre class="r"><code>library(tidyverse) # for data tidying, manipulating, and visualizing. Includes dplyr and ggplot2 among others
+# library(dplyr); library(tidyr); library(ggplot2) # if the full tidyverse isn't installed
 library(genomicAnnotationsLab) # Loads in the scoring functions and data
 library(stringr) # tidy manipulation of strings</code></pre>
 </div>
@@ -176,22 +176,22 @@ library(stringr) # tidy manipulation of strings</code></pre>
 ## # ... with 36,507 more rows</code></pre>
 </div>
 </div>
-<div id="annogene-scoring" class="section level2">
-<h2>AnnoGene Scoring</h2>
-<p>AnnoGene takes a set of annotations and a set of genes. AnnoGene uses the covariance of annotations in a given gene set’s annotations to find which terms are enriched.</p>
-<pre class="r"><code>annogeneOutput = makeScore(humanGO, eGenes)</code></pre>
+<div id="annotation-scoring" class="section level2">
+<h2>Annotation Scoring</h2>
+<p>The scoring software takes a set of annotations and a set of genes. It then uses the covariance of annotations in a given gene set’s annotations to find which terms are enriched.</p>
+<pre class="r"><code>annoOutput = makeScore(humanGO, eGenes)</code></pre>
 <pre><code>## [1] &quot;Done selecting Annotations: 186&quot;
 ## [1] &quot;Done computing BG scores.&quot;
 ## [1] &quot;Done computing background quadratic form.&quot;
 ## [1] &quot;Done computing training set quadratic form.&quot;</code></pre>
-<pre class="r"><code>geneScores = data_frame(gene_symbol = names(annogeneOutput$Scores), #create a data_frame with the scores and symbols
-                        score = annogeneOutput$Scores,
+<pre class="r"><code>geneScores = data_frame(gene_symbol = names(annoOutput$Scores), #create a data_frame with the scores and symbols
+                        score = annoOutput$Scores,
                         inTrainSet = gene_symbol %in% eGenes) %&gt;% 
   arrange(desc(score)) %&gt;% #order it by score
   mutate(gene_symbol = factor(gene_symbol, levels = gene_symbol)) %&gt;% #convert the symbol to a factor
   filter(!is.na(score)) #remove the one gene that wasn't in the annotation source
 
-enrichedAnnotations = annogeneOutput$Enriched.Annotations %&gt;% #create a data_frame from the enriched annotation information
+enrichedAnnotations = annoOutput$Enriched.Annotations %&gt;% #create a data_frame from the enriched annotation information
   as.data.frame(stringsAsFactors = FALSE) %&gt;% 
   as.tbl %&gt;% 
   mutate(Count = as.integer(Count), # convert them to the appropriate types
@@ -204,7 +204,7 @@ enrichedAnnotations = annogeneOutput$Enriched.Annotations %&gt;% #create a data_
   left_join(goterms, by = 'ID') #join to the term description matrix from before</code></pre>
 <div id="inspect-enriched-annotations" class="section level3">
 <h3>Inspect enriched annotations</h3>
-<p>Let’s look at what terms characterize our platelet eGenes. AnnoGene defaults to a Pvalue &lt; .01 cutoff, but since we’re selecting from thousands of GO terms let’s impose an <span class="math inline">\(\alpha\)</span> = .05 Bonferroni-adjusted cutoff.</p>
+<p>Let’s look at what terms characterize our platelet eGenes. The software defaults to a Pvalue &lt; .01 cutoff, but since we’re selecting from thousands of GO terms let’s impose an <span class="math inline">\(\alpha\)</span> = .05 Bonferroni-adjusted cutoff.</p>
 <pre class="r"><code>enrichedAnnotations %&gt;% 
   filter(Pvalue &lt; .05 / ncol(humanGO))</code></pre>
 <pre><code>## # A tibble: 20 × 8
@@ -288,10 +288,10 @@ enrichedAnnotations = annogeneOutput$Enriched.Annotations %&gt;% #create a data_
 <div id="lab-problems" class="section level2">
 <h2>Lab problems</h2>
 <ol style="list-style-type: decimal">
-<li><p>Choose an alternate annotation source among these datasets: MGI, PPI, or some other genomic annotation source of your own choosing. While the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under ‘<a href="GO:000002" class="uri">GO:000002</a> mitochondrial genome maintenance’) AnnoGene also works for continuous annotations. <span style="color:red">TODO</span> Have some other annotation matrices already prepared?</p></li>
+<li><p>Choose an alternate annotation source among these datasets: MGI, PPI, or some other genomic annotation source of your own choosing. While the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under ‘<a href="GO:000002" class="uri">GO:000002</a> mitochondrial genome maintenance’) this method also works for continuous annotations.</p></li>
 <li><p>Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with <code>rownames(mat) = gene_name_vector</code> and <code>colnames(mat) = annotation_variable_name_vector</code>).</p></li>
 <li><p>Select your favorite set of genes.</p></li>
-<li>Run AnnoGene by calling <code>makeScore(AnnotationMatrix, TrainingGenes)</code>. This outputs a list with two elements. The first, named ‘Scores’ is a named vector giving the score for each gene. The second, ‘Enriched.Annotations’, is a matrix. If you’d like to tidy them into data_frames, lift over the code from the lab. Interpret your results like we did in the lab:<br />
+<li>Run the annotation software by calling <code>makeScore(AnnotationMatrix, TrainingGenes)</code>. This outputs a list with two elements. The first, named ‘Scores’ is a named vector giving the score for each gene. The second, ‘Enriched.Annotations’, is a matrix. If you’d like to tidy them into data_frames, lift over the code from the lab. Interpret your results like we did in the lab:<br />
 </li>
 </ol>
 <ul>
