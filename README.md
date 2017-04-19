@@ -9,7 +9,9 @@
     * Or if you're running this from an R console on Sphere, just add `lib.loc = '/home/student20/R/x86_64-redhat-linux-gnu-library/3.2'` to any calls to library() for example `library(genomicAnnotationsLab, lib.loc = '/home/student20/R/x86_64-redhat-linux-gnu-library/3.2')`.
 * Install this package: `devtools::install_github('andrewGhazi/genomicAnnotationsLab')`
 
-Test that you've got the package installed correctly by running `?makeScore` to look at the help documentation for a function we will be using.
+Test that you've got the package installed correctly by running `?makeScore` to look at the help documentation for a function we will be using.  
+
+There's nothing to turn in for the pre-lab.
 
 # Lab
 
