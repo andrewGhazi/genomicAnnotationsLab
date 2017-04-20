@@ -2,7 +2,7 @@
 % Please edit documentation in R/scoringScripts.R
 \name{makeScore}
 \alias{makeScore}
-\title{Score a set of training genes based on an annotation source.}
+\title{Score a set of training genes based on an annotation source. First the software determines the pattern of annotations that best characterizes the training set. Then every gene is scored according to the ratio of how similar the gene is to the training set and the background set.}
 \usage{
 makeScore(AnnotationMatrix = NULL, TrainingGenes = NULL, MinPerAnno = 5,
   OR = 1.5, PVal = 0.01, MinAnno = 5, MaxAnno = 200)
@@ -23,8 +23,8 @@ makeScore(AnnotationMatrix = NULL, TrainingGenes = NULL, MinPerAnno = 5,
 \item{MaxAnno}{maximum number of annotations to select}
 }
 \value{
-a list with two elements: a named vector of Scores and a matrix of EnrichedAnnotations
+a list with two elements: a named vector of Scores and a matrix of EnrichedAnnotations. Scores indicate how well a given gene resembles the input gene set in the annotation source.
 }
 \description{
-Score a set of training genes based on an annotation source.
+Score a set of training genes based on an annotation source. First the software determines the pattern of annotations that best characterizes the training set. Then every gene is scored according to the ratio of how similar the gene is to the training set and the background set.
 }

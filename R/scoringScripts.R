@@ -1,6 +1,6 @@
 #This code was originally written by Ian Campbell
 
-#' Score a set of training genes based on an annotation source.
+#' Score a set of training genes based on an annotation source. First the software determines the pattern of annotations that best characterizes the training set. Then every gene is scored according to the ratio of how similar the gene is to the training set and the background set.
 #' @param AnnotationMatrix a matrix with genes as rows and annotation variables as columns (with appropriate row/column names)
 #' @param TrainingGenes a character vector of genes
 #' @param MinPerAnno The minimum require number of genes annotated for an annotation to be considered
@@ -9,7 +9,7 @@
 #' @param MinAnno minimum number of annotations to select
 #' @param MaxAnno maximum number of annotations to select
 #'
-#' @return a list with two elements: a named vector of Scores and a matrix of EnrichedAnnotations
+#' @return a list with two elements: a named vector of Scores and a matrix of EnrichedAnnotations. Scores indicate how well a given gene resembles the input gene set in the annotation source.
 #' @import Matrix
 #' @importFrom corpcor fast.svd
 #' @export
