@@ -5,9 +5,7 @@ date: "4/6/2017"
 output: html_document
 ---
 
-```{r set-options, echo=FALSE}
-options(width = 800)
-```
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
@@ -52,7 +50,7 @@ Again, if you're running R on Sphere, you will need to enter `declare -x R_LIBS_
 
 We'll be using 3 objects that are loaded in with the genomic annotations package: 
 
-* eGenes- a character vector containing genes that contain eQTLs that effect their expression in platelets.
+* eGenes - a character vector containing genes that contain eQTLs that effect their expression in platelets.
 * humanGO - a sparse matrix describing which genes (rows) are annotated under which Gene Ontology (GO) terms
 * goterms - a data frame containing a mapping between GO IDs (e.g. GO:0000011) and (e.g. vacuole inheritance).
 
@@ -107,7 +105,7 @@ geneScores = data_frame(gene_symbol = names(annoOutput$Scores),
                         score = annoOutput$Scores,
                         inTrainSet = gene_symbol %in% eGenes) %>% 
   arrange(desc(score)) %>% #order it by descending score
-  mutate(gene_symbol = factor(gene_symbol, levels = gene_symbol)) %>% # mutate adds new variables or overwrites existing ones
+  mutate(gene_symbol = factor(gene_symbol, levels = gene_symbol)) %>% # mutate to overwrite an existing variable
   filter(!is.na(score)) #remove the one gene that wasn't in the annotation source
 
 #create a data_frame from the enriched annotation information
@@ -153,7 +151,7 @@ p = geneScores %>%
   mutate(rank = 1:nrow(geneScores)) %>% # We sorted it by score earlier, so add a ranking variable with mutate
   ggplot(aes(x = rank, y = score)) + # initialize the ggplot
   geom_col(aes(color = inTrainSet, # Add a bar for each gene
-               fill = inTrainSet)) + # Use an aesthetic mapping of group membership to border color and fill color.
+               fill = inTrainSet)) + # Use an aesthetic mapping of group membership to color
   scale_fill_manual(values = c('grey80', 'red')) + #set the colors to be used
   scale_color_manual(values = c('grey80', 'red'))
 p
@@ -195,8 +193,8 @@ Note that while the Gene Ontology is a binary annotation for each term (e.g. a g
 * Use ggplot2 (or other plotting software as you prefer) to visualize where the training set falls in the score distribution.
 * What are some high-scoring genes not in the training set? 
 * Why do you think they scored highly?
-* What terms/variables are characteristic of your training set?
-* Why do you think they are characteristic?
+* What terms/variables are characteristic of your training set? 
+* Why do you think they are characteristic? This might be hard to answer with the miRNA annotation set since 'hsa-mir-574-5p' isn't as obviously meaningful as 'GO:0000005 ribosomal chaperone activity'. If you want to gain more insight into your gene set, re-run it with the GO annotation set from the lab and see what you get.
 
 
 
