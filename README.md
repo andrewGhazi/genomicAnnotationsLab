@@ -5,7 +5,7 @@
 * Install R: [https://cran.r-project.org/](https://cran.r-project.org/)
 * Install RStudio: [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/)
 * Install packages needed for this lab (in R): `install.packages(pkgs = c('corpcor', 'magrittr', 'stringr', 'readr', 'devtools', 'tidyverse'))` or 
-    * If you're running this from an R console on Sphere, type `declare -x R_LIBS_USER="/home/student20/R/library”` in bash before starting R.
+    * If you're running this from an R console on Sphere, type `declare -x R_LIBS_USER="/home/student20/R/x86_64-redhat-linux-gnu-library/3.2"` in bash before starting R.
 * Install this package: `devtools::install_github('andrewGhazi/genomicAnnotationsLab')`
 
 Test that you've got the package installed correctly by loading the package with `library(genomicAnnotationsLab)` and running `?makeScore` to look at the help documentation for a function we will be using.  

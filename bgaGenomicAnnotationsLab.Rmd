@@ -16,6 +16,20 @@ knitr::opts_chunk$set(echo = TRUE,
 
 This document was created at `r date()`. If any changes have been introduced lately they can be found [here](http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html).
 
+## Pre-Lab  
+
+The lab can be run from Sphere, but it will be easier to complete if you use RStudio.
+
+* Install R: [https://cran.r-project.org/](https://cran.r-project.org/)
+* Install RStudio: [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/)
+* Install packages needed for this lab (in R): `install.packages(pkgs = c('corpcor', 'magrittr', 'stringr', 'readr', 'devtools', 'tidyverse'))` or 
+    * Don't do this if you're running the lab from an R console on Sphere. Instead type `declare -x R_LIBS_USER="/home/student20/R/x86_64-redhat-linux-gnu-library/3.2"` in bash before starting R.
+* Install the lab package: `devtools::install_github('andrewGhazi/genomicAnnotationsLab')`
+
+Test that you've got the package installed correctly by loading the package with `library(genomicAnnotationsLab)` and running `?makeScore` to look at the help documentation for a function we will be using.  
+
+There's nothing to turn in for the pre-lab.
+
 ## Note on R coding style
 
 This lab is designed to adhere to tidy principles where possible. This means keeping data in data_frames with rows representing observations and columns as variables. 
@@ -32,44 +46,72 @@ library(tidyverse) # for data tidying, manipulating, and visualizing. Includes d
 library(genomicAnnotationsLab) # Loads in the scoring functions and data
 library(stringr) # tidy manipulation of strings
 ```
-
-Add the argument `lib.loc = '/home/student20/R/x86_64-redhat-linux-gnu-library/3.2'` to your calls to `library()` if you're running this on Sphere.
+Again, if you're running R on Sphere, you will need to enter `declare -x R_LIBS_USER="/home/student20/R/x86_64-redhat-linux-gnu-library/3.2"` into the terminal before starting R.
 
 ### Data
 
-The package loads in 3 objects: 
+We'll be using 3 objects that are loaded in with the genomic annotations package: 
 
 * eGenes- a character vector containing genes that contain eQTLs that effect their expression in platelets.
 * humanGO - a sparse matrix describing which genes (rows) are annotated under which Gene Ontology (GO) terms
 * goterms - a data frame containing a mapping between GO IDs (e.g. GO:0000011) and (e.g. vacuole inheritance).
 
 ```{r, message = FALSE}
-eGenes %>% head
+eGenes %>% head #head shows the first 6 elements of a vector
 ```
 
-Also read in the Gene Ontology terms
+Let's also inspect the matrix `humanGO` which describes which genes are annotated under which GO terms.
 ```{r, cache.lazy=FALSE}
-
 dim(humanGO)
-humanGO[1:5,1:5] #Print a small sample
+humanGO[1:5,1:5] #Print the first five rows of the first five columns as a small sample
 goterms
 ```
+
+So for instance we see that 4 genes are annotated under GO:0008150. We can use filter on the term mapping data_frame `goterms` to see what this term is:
+
+```{r}
+goterms %>% 
+  filter(ID == 'GO:0008150')
+```
+
+So these genes are annotated under `biological_process`. 
 
 ## Annotation Scoring
 
 The scoring software takes a set of annotations and a set of genes. It then uses the covariance of annotations in a given gene set's annotations to find which terms are enriched.
 
+In this code block, we first run the scoring software. This can take a minute or two depending on the size of the annotation source.
+
 ```{r}
 annoOutput = makeScore(humanGO, eGenes)
+```  
 
-geneScores = data_frame(gene_symbol = names(annoOutput$Scores), #create a data_frame with the scores and symbols
+Let's inspect the structure of the output: 
+```{r}
+annoOutput %>% class() #use class() to see the type of an object
+annoOutput %>% length() #use length to find the length of vectors or lists
+annoOutput %>% names() #This list is named, so we can use names to see the names of the two elements
+
+annoOutput$Scores %>% head # Use `$` to access the elements of a named list. Scores is a named vector of gene scores.
+
+annoOutput$Enriched.Annotations %>% class # enrichedAnnotations is a matrix describing which annotations are enriched among our training genes.
+annoOutput$Enriched.Annotations[1:2,] #This matrix does not print nicely
+
+```
+
+Given that this output is sort of messy, let's tidy it up a bit by putting them into two data frames, `geneScores` and `enrichedAnnotations`.
+
+```{r}
+#create a data_frame with the symbols, scores, and a logical indicating whether or not it belonged to the training set
+geneScores = data_frame(gene_symbol = names(annoOutput$Scores), 
                         score = annoOutput$Scores,
                         inTrainSet = gene_symbol %in% eGenes) %>% 
-  arrange(desc(score)) %>% #order it by score
-  mutate(gene_symbol = factor(gene_symbol, levels = gene_symbol)) %>% #convert the symbol to a factor
+  arrange(desc(score)) %>% #order it by descending score
+  mutate(gene_symbol = factor(gene_symbol, levels = gene_symbol)) %>% # mutate adds new variables or overwrites existing ones
   filter(!is.na(score)) #remove the one gene that wasn't in the annotation source
 
-enrichedAnnotations = annoOutput$Enriched.Annotations %>% #create a data_frame from the enriched annotation information
+#create a data_frame from the enriched annotation information
+enrichedAnnotations = annoOutput$Enriched.Annotations %>% 
   as.data.frame(stringsAsFactors = FALSE) %>% 
   as.tbl %>% 
   mutate(Count = as.integer(Count), # convert them to the appropriate types
@@ -77,10 +119,12 @@ enrichedAnnotations = annoOutput$Enriched.Annotations %>% #create a data_frame f
          OddsRatio = as.numeric(OddsRatio),
          Pvalue = as.numeric(Pvalue),
          Genes = str_split(Genes, ',')) %>% # List column!
-  arrange(Pvalue) %>% # arrange by p value
+  arrange(Pvalue) %>% # sort rows p value
   rename(ID = TermID) %>% #rename for the join
   left_join(goterms, by = 'ID') #join to the term description matrix from before
 ```
+
+
 
 ### Inspect enriched annotations
 
@@ -90,7 +134,7 @@ enrichedAnnotations %>%
   filter(Pvalue < .05 / ncol(humanGO))
 ```
 
-The top enriched term is 'cytoplasm'. Given that platelets don't have nuclei, this makes sense!
+The top enriched term is 'cytoplasm'. Given that platelets don't have nuclei and thus any proteins they use must be localized to the cytoplasm or other organelles, this makes sense!
 
 ### Inspect Scoring Results
 
@@ -99,40 +143,48 @@ The top enriched term is 'cytoplasm'. Given that platelets don't have nuclei, th
 geneScores
 ```
 
-We can plot each gene's rank against its score and color according to whether or not it belonged to the training set to see how well it turned out.
+Let's try to visualize how well the scoring process worked. 
+
+We can plot each gene's rank against its score and color according to whether or not it belonged to the training set to see how well it turned out. If you're running from Sphere, set the output equal to a variable (for example `p = ggplot(data, aes(x,y)) + geom_point()`) then use `ggsave` to save the ggplot to a file (e.g. `ggsave(p, '/path/to/output.png')`) that you can then copy over to your computer (using `scp` or something).
+
+We can create plots with `ggplot()`. This function takes a data_frame and an aesthetic mapping of variables created with `aes()`. With that you layer on additional geometric objects and other plot parameters by iteratively adding them on with `+`.
 ```{r}
-geneScores %>% 
-  mutate(rank = 1:nrow(geneScores)) %>% # It's sorted already, so add a ranking variable
-  ggplot(aes(rank, score)) + # initialize the ggplot
+p = geneScores %>% 
+  mutate(rank = 1:nrow(geneScores)) %>% # We sorted it by score earlier, so add a ranking variable with mutate
+  ggplot(aes(x = rank, y = score)) + # initialize the ggplot
   geom_col(aes(color = inTrainSet, # Add a bar for each gene
-               fill = inTrainSet)) +
+               fill = inTrainSet)) + # Use an aesthetic mapping of group membership to border color and fill color.
   scale_fill_manual(values = c('grey80', 'red')) + #set the colors to be used
-  scale_color_manual(values = c('grey80', 'red')) +
-  theme(text = element_text(size = 14))
+  scale_color_manual(values = c('grey80', 'red'))
+p
+#ggsave(p, 'plots/rankPlot.png')
 ```
+
+Let's try comparing the training and non-training sets directly. An old-fashioned way of doing this would be with side-by-side boxplots, however plotting the data itself as a jittered stripchart is a more informative visualization that doesn't rely on summary statistics. Transparency helps prevent overplotting, and overlaid violin plots (red) show density estimates by group.
 
 ```{r}
-geneScores %>% 
-  ggplot(aes(inTrainSet, score)) + 
-  geom_point(position = 'jitter', alpha = .2, shape = 16) +
+p2 = geneScores %>% 
+  ggplot(aes(x = inTrainSet, y = score)) + 
+  geom_point(position = 'jitter', alpha = .2, shape = 16) + #alpha sets the transparency
   geom_violin(alpha = 0, color = 'red')
+p2
+#ggsave(p2, 'plots/jitterPlot.png')
 ```
-
 
 The training set is clearly enriched among higher scoring genes. However there are also training genes with very low scores -- this implies that there's some degree of heterogeneity among the training genes. Let's take a look at the genes that are high scoring and NOT in the training set.
 
 ```{r}
 geneScores %>% 
-  filter(!inTrainSet, score > 2.5)
+  filter(!inTrainSet, score > 2.5) # You can add more conditions to filter as additional arguments
 ```
 
 These can be prioritized as potential new members of the training set in followup studies.
 
 ## Lab problems
 
-For the homework, you'll repeat the lab with a different annotation source and gene set. Show your code and appropriate outputs in a document. If you'd like to learn how to author analysis documents (like this lab), RMarkdown would be a good way to do this.
+For the homework, you'll repeat the lab with a different annotation source and gene set. Show your code and appropriate outputs in a document. If you'd like to learn how to author analysis documents (like this lab), using RMarkdown from with RStudio would be a good way to do this. Otherwse a PDF containg your code, comments, and figures will do.
 
-1. Choose an alternate annotation source. There's another dataset called `miRNA` included with the package that shows how >30,000 genes are annotated in miRBase. You can use this but you can earn a bonus point if you compile your own annotation matrix from a source that's personally interesting to you :).  
+1. Choose an alternate annotation source. There's another dataset called `miRNA` included with the package that shows how >30,000 genes are annotated in miRBase. You can use this but you can earn a bonus point if you compile your own annotation matrix from a source that's personally interesting to you :). Alternative annotation sources could come from KEGG, protein-protein interaction networks, or Mouse Genome Informatics -- any source that provides genomic annotations for many genes.  
 Note that while the Gene Ontology is a binary annotation for each term (e.g. a given gene either is or is not annotated under 'GO:000002') this method also works for continuous annotations.  
 
 2. Reshape your input annotations into a matrix (if necessary). Use the genes as rows and the annotation variables as columns. Make sure that the matrix has the appropriately set row and column names (set with `rownames(mat) = gene_name_vector` and `colnames(mat) = annotation_variable_name_vector`). Use `Matrix::Matrix()` if the matrix is sparse and uses too much memory.
