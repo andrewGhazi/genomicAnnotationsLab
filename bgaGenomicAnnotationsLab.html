@@ -123,7 +123,7 @@ $(document).ready(function () {
 </div>
 
 
-<p>This document was created at Mon Apr 24 23:06:09 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
+<p>This document was created at Mon Apr 24 23:12:14 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
 <div id="pre-lab" class="section level2">
 <h2>Pre-Lab</h2>
 <p>The lab can be run from Sphere, but it will be easier to complete if you use RStudio.</p>
@@ -383,7 +383,7 @@ nGene = length(genes)
 mat = matrix(ncol = nAnno, nrow = nGene)
 colnames(mat) = annotations
 rownames(mat) = genes</code></pre>
-<p>Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that process to 1 and all others to 0.</p>
+<p>Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that annotation to 1 and all others to 0.</p>
 <p>Depending on the data source it can get tricky dealing with annoyances like the semicolons and spaces in character vectors so it can be a bit tedious getting everything cleaned up into a matrix. Unless you’re already fairly proficient in R this might take a long time to do.</p>
 </div>
 <div id="how-do-i-get-a-new-gene-set" class="section level3">

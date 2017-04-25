@@ -226,7 +226,7 @@ rownames(mat) = genes
 ```
 
 
-Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that process to 1 and all others to 0.  
+Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that annotation to 1 and all others to 0.  
 
 Depending on the data source it can get tricky dealing with annoyances like the semicolons and spaces in character vectors so it can be a bit tedious getting everything cleaned up into a matrix. Unless you're already fairly proficient in R this might take a long time to do.
 
