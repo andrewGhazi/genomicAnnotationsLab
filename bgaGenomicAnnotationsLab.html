@@ -123,7 +123,7 @@ $(document).ready(function () {
 </div>
 
 
-<p>This document was created at Mon Apr 24 11:04:39 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
+<p>This document was created at Mon Apr 24 23:00:43 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
 <div id="pre-lab" class="section level2">
 <h2>Pre-Lab</h2>
 <p>The lab can be run from Sphere, but it will be easier to complete if you use RStudio.</p>
@@ -361,6 +361,62 @@ Note that while the Gene Ontology is a binary annotation for each term (e.g. a 
 <li>What terms/variables are characteristic of your training set?</li>
 <li>Why do you think they are characteristic? This might be hard to answer with the miRNA annotation set since ‘hsa-mir-574-5p’ isn’t as obviously meaningful as ‘<a href="GO:0000005" class="uri">GO:0000005</a> ribosomal chaperone activity’. If you want to gain more insight into your gene set, re-run it with the GO annotation set from the lab and see what you get.</li>
 </ul>
+</div>
+<div id="problem-clarifications" class="section level2">
+<h2>Problem clarifications</h2>
+<div id="is-there-another-list-of-genes-to-be-using-with-the-mirna-dataset" class="section level3">
+<h3><em>Is there another list of genes to be using with the miRNA dataset?</em></h3>
+<p>The idea was that for the problems you pick your own set of genes and use them with a new annotation source. So no, there’s not a different set of genes that you’re supposed to be using with the miRNA dataset. The only strict requirement for the gene set you choose is that the genes are annotated in the annotation source, though it’s preferable if you can consider them a coherent group in some way. That way you will be able to ascribe meaning to the results you get – the enriched terms will hopefully capture some of the properties that lead you to consider them a coherent group in the first place.</p>
+</div>
+<div id="how-do-i-assemble-an-annotation-matrix" class="section level3">
+<h3><em>How do I assemble an annotation matrix?</em></h3>
+<p>You don’t have to if you don’t want to.</p>
+</div>
+<div id="what-if-i-want-to" class="section level3">
+<h3><em>What if I want to?</em></h3>
+<p>You’ll first want to define the unique annotation variables and genes that are annotated in the annotation source. Here’s a fake example:</p>
+<pre class="r"><code>annotations = c('AN:001', 'AN:002', 'AN:003')
+genes = c('TP53', 'BRCA2', 'GHZ')</code></pre>
+<p>Then create the matrix with the appropriate size and names:</p>
+<pre class="r"><code>nAnno = length(annotations)
+nGene = length(genes)
+mat = matrix(ncol = nAnno, nrow = nGene)
+colnames(mat) = annotations
+rownames(mat) = genes</code></pre>
+<p>Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that process to 1 and all others to 0.</p>
+<p>Depending on the data source it can get tricky dealing with annoyances like the semicolons and spaces in character vectors so it can be a bit tedious getting everything cleaned up into a matrix. Unless you’re already fairly proficient in R this might take a long time to do.</p>
+</div>
+<div id="how-do-i-get-a-new-gene-set" class="section level3">
+<h3><em>How do I get a new gene set?</em></h3>
+<p>You could try the Google approach or the Biomart approach.</p>
+<div id="google-approach" class="section level4">
+<h4>Google Approach</h4>
+<p>Google for ‘&lt;some biological domain you’re interested in&gt; dataset’. Look for databases that have readily downloadable datasets. For instance I searched for ‘oncogenes dataset’ and found this <a href="https://www.biostars.org/p/15890/">Biostars page</a> which led me to <a href="http://ncg.kcl.ac.uk/">this database</a>. There’s a link to a list of Cancer Genes, which gave me a text file with two lists of known and putative cancer genes. This was just a quick example and I’m not sure how reputable that database is, but there are a ton of databases/resources out there. You will be able to find something that’s easy to work with if you poke around for a while.</p>
+<p>Then read in your gene set. I recommend read_tsv from the readr package (which gets loaded in with tidyverse I believe). Access the column in the data_frame with $ then use the unique() function to remove duplicates.</p>
+<p>So from this example I could do something like</p>
+<pre class="r"><code>tmp = read_tsv('G:/Downloads/cancergenes_list.txt')
+tmp$`518_Known_Cancer_Genes` %&gt;% unique %&gt;% head()
+
+#[1] &quot;ABI1&quot;  &quot;ABL1&quot;  &quot;ABL2&quot;  &quot;ACKR3&quot; &quot;ACSL3&quot; &quot;ACSL6&quot;</code></pre>
+</div>
+<div id="biomart-approach" class="section level4">
+<h4>Biomart Approach</h4>
+<p>I know BGA has a lecture on this but I’m not sure if you’ve had it yet. From the <a href="http://www.ensembl.org/biomart/martview/">Ensembl website</a> you’d do something like</p>
+<ol style="list-style-type: decimal">
+<li>Start a new biomart view</li>
+<li>Select the ensembl genes database</li>
+<li>Choose the Human Genes dataset</li>
+<li>Click on filters, then select some phenotypes you’re interested in</li>
+<li>Click on attributes then check gene name</li>
+<li>Then click Results &gt; export (unique results) to TSV &gt; Go</li>
+</ol>
+<p>It will give you a nice TSV that’s easy to read in with read_tsv. Again you’d want to make sure to filter down your genes to those that are in the annotation source.</p>
+</div>
+</div>
+<div id="whats-the-point-of-this-lab" class="section level3">
+<h3><em>What’s the point of this lab?</em></h3>
+<p>The point of the lab was to expose you to R, genomic annotations, and statistical pattern scoring; there’s a lot of underlying subtlety and we don’t expect you to have mastered everything. Just show that you tried and explain what you learned in the document you turn in and it will be fine.</p>
+</div>
 </div>
 
 

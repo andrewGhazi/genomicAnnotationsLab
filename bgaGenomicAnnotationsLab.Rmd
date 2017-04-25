@@ -196,6 +196,77 @@ Note that while the Gene Ontology is a binary annotation for each term (e.g. a g
 * What terms/variables are characteristic of your training set? 
 * Why do you think they are characteristic? This might be hard to answer with the miRNA annotation set since 'hsa-mir-574-5p' isn't as obviously meaningful as 'GO:0000005 ribosomal chaperone activity'. If you want to gain more insight into your gene set, re-run it with the GO annotation set from the lab and see what you get.
 
+## Problem clarifications
+
+### _Is there another list of genes to be using with the miRNA dataset?_
+
+The idea was that for the problems you pick your own set of genes and use them with a new annotation source. So no, there's not a different set of genes that you're supposed to be using with the miRNA dataset. The only strict requirement for the gene set you choose is that the genes are annotated in the annotation source, though it's preferable if you can consider them a coherent group in some way. That way you will be able to ascribe meaning to the results you get -- the enriched terms will hopefully capture some of the properties that lead you to consider them a coherent group in the first place.
+
+### _How do I assemble an annotation matrix?_
+
+You don't have to if you don't want to.
+
+### _What if I want to?_
+
+You'll first want to define the unique annotation variables and genes that are annotated in the annotation source. Here's a fake example:
+
+```{r, eval = FALSE}
+annotations = c('AN:001', 'AN:002', 'AN:003')
+genes = c('TP53', 'BRCA2', 'GHZ')
+
+```
+
+Then create the matrix with the appropriate size and names:
+```{r, eval = FALSE}
+nAnno = length(annotations)
+nGene = length(genes)
+mat = matrix(ncol = nAnno, nrow = nGene)
+colnames(mat) = annotations
+rownames(mat) = genes
+```
+
+
+Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that process to 1 and all others to 0.  
+
+Depending on the data source it can get tricky dealing with annoyances like the semicolons and spaces in character vectors so it can be a bit tedious getting everything cleaned up into a matrix. Unless you're already fairly proficient in R this might take a long time to do.
+
+### _How do I get a new gene set?_
+
+You could try the Google approach or the Biomart approach.
+
+#### Google Approach
+
+Google for '\<some biological domain you're interested in\> dataset'.
+Look for databases that have readily downloadable datasets. For instance I searched for 'oncogenes dataset' and found this [Biostars page](https://www.biostars.org/p/15890/) which led me to [this database](http://ncg.kcl.ac.uk/). There's a link to a list of Cancer Genes, which gave me a text file with two lists of known and putative cancer genes. This was just a quick example and I'm not sure how reputable that database is, but there are a ton of databases/resources out there. You will be able to find something that's easy to work with if you poke around for a while.
+
+Then read in your gene set. I recommend read_tsv from the readr package (which gets loaded in with tidyverse I believe).
+Access the column in the data_frame with $ then use the unique() function to remove duplicates.
+
+So from this example I could do something like
+
+```{r, eval = FALSE}
+tmp = read_tsv('G:/Downloads/cancergenes_list.txt')
+tmp$`518_Known_Cancer_Genes` %>% unique %>% head()
+
+#[1] "ABI1"  "ABL1"  "ABL2"  "ACKR3" "ACSL3" "ACSL6"
+```
+
+#### Biomart Approach
+
+I know BGA has a lecture on this but I'm not sure if you've had it yet. From the [Ensembl website](http://www.ensembl.org/biomart/martview/) you'd do something like
+
+1. Start a new biomart view
+2. Select the ensembl genes database
+3. Choose the Human Genes dataset
+4. Click on filters, then select some phenotypes you're interested in
+5. Click on attributes then check gene name
+6. Then click Results > export (unique results) to TSV > Go
+
+It will give you a nice TSV that's easy to read in with read_tsv. Again you'd want to make sure to filter down your genes to those that are in the annotation source.
+
+### _What's the point of this lab?_
+
+The point of the lab was to expose you to R, genomic annotations, and statistical pattern scoring; there's a lot of underlying subtlety and we don't expect you to have mastered everything. Just show that you tried and explain what you learned in the document you turn in and it will be fine. 
 
 
 
