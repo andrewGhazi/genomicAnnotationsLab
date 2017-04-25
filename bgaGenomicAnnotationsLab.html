@@ -123,7 +123,7 @@ $(document).ready(function () {
 </div>
 
 
-<p>This document was created at Tue Apr 25 11:04:24 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
+<p>This document was created at Tue Apr 25 13:25:28 2017. If any changes have been introduced lately they can be found <a href="http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html">here</a>.</p>
 <div id="pre-lab" class="section level2">
 <h2>Pre-Lab</h2>
 <p>The lab can be run from Sphere, but it will be easier to complete if you use RStudio.</p>
@@ -372,7 +372,7 @@ Note that while the Gene Ontology is a binary annotation for each term (e.g. a 
 <h3><em>Just what are these annotation matrices?</em></h3>
 <p>To clarify what <code>humanGO</code> is a bit further: it’s not derived from any particular dataset, it’s derived from the Gene Ontology itself. If you go to <a href="http://amigo.geneontology.org/amigo">the GO browser</a> and look up a gene, on the gene’s page you’ll be able to click on a button labeled ‘GO class’ to see all of the terms it is annotated under. If you select that gene’s row from <code>humanGO</code>, you’ll see that these are the same columns that are equal to 1 and all the other columns are 0. (Or it should be pretty close, I think the GO has been updated since we assembled the humanGO matrix).</p>
 <p>The GO itself is of course derived from experiments/data, but it’s collaboratively curated by a consortium of research institutions. They have more information about it on <a href="http://geneontology.org/page/documentation">their documentation site</a>.</p>
-<p>So an annotation matrix just provides organized answers questions about (hopefully all) genes in the genome. In <code>humanGO</code> the question asked by each column is: “Is this gene annotated under this term?” and the elements of the column are populated with 1 for “Yes” and 0 for “No”. So the 5th column asks “Is this gene annotated under <a href="GO:0008150" class="uri">GO:0008150</a> - biological process?” and the 2nd row of that column answers “Yes” for A1BG while the 8th row of that column answers “No” for A4D0T7.</p>
+<p>So an annotation matrix just provides organized answers to questions about (hopefully all) genes in the genome. In <code>humanGO</code> the question asked by each column is: “Is this gene annotated under this term?” and the elements of the column are populated with 1 for “Yes” and 0 for “No”. So the 5th column asks “Is this gene annotated under <a href="GO:0008150" class="uri">GO:0008150</a> - biological process?” and the 2nd row of that column answers “Yes” for A1BG while the 8th row of that column answers “No” for A4D0T7.</p>
 <p>Other example questions an annotation matrix column could answer: * Is this gene expressed in the GTEx Tibial Artery tissue? * What’s the average H3K27Ac Chip-Seq signal across this gene’s promoter region in the ENCODE data? * Does this gene interact with TP53 in a protein-protein interaction network?</p>
 <p>Any sort of question for which there is quantitative genome-wide data. Append many columns like this and you have an annotation matrix.</p>
 </div>
@@ -391,7 +391,7 @@ nGene = length(genes)
 mat = matrix(ncol = nAnno, nrow = nGene)
 colnames(mat) = annotations
 rownames(mat) = genes</code></pre>
-<p>Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that annotation to 1 and all others to 0.</p>
+<p>Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that annotation to 1 and all others to 0 (or the appropriate value if using a continuous annotation).</p>
 <p>Depending on the data source it can get tricky dealing with annoyances like the semicolons and spaces in character vectors so it can be a bit tedious getting everything cleaned up into a matrix. Unless you’re already fairly proficient in R this might take a long time to do.</p>
 </div>
 <div id="how-do-i-get-a-new-gene-set" class="section level3">
@@ -409,7 +409,7 @@ tmp$`518_Known_Cancer_Genes` %&gt;% unique %&gt;% head()
 </div>
 <div id="biomart-approach" class="section level4">
 <h4>Biomart Approach</h4>
-<p>I know BGA has a lecture on this but I’m not sure if you’ve had it yet. From the <a href="http://www.ensembl.org/biomart/martview/">Ensembl website</a> you’d do something like</p>
+<p>I know BGA has a lecture on this but I’m not sure if you’ve had it yet. From the <a href="http://www.ensembl.org/biomart/martview/">Ensembl website</a> you’d do something like:</p>
 <ol style="list-style-type: decimal">
 <li>Start a new biomart view</li>
 <li>Select the ensembl genes database</li>

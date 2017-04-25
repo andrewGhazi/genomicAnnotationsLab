@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       cache = TRUE)
 ```
 
-This document was created at `r date()`. If any changes have been introduced lately they can be found [here](http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html).
+This document was rendered at `r date()`. If any changes have been introduced lately they can be found [here](http://htmlpreview.github.io/?https://github.com/andrewGhazi/genomicAnnotationsLab/blob/master/bgaGenomicAnnotationsLab.html).
 
 ## Pre-Lab  
 
@@ -208,7 +208,7 @@ To clarify what `humanGO` is a bit further: it's not derived from any particular
 
 The GO itself is of course derived from experiments/data, but it's collaboratively curated by a consortium of research institutions. They have more information about it on [their documentation site](http://geneontology.org/page/documentation).
 
-So an annotation matrix just provides organized answers questions about (hopefully all) genes in the genome. In `humanGO` the question asked by each column is: "Is this gene annotated under this term?" and the elements of the column are populated with 1 for "Yes" and 0 for "No". So the 5th column asks "Is this gene annotated under GO:0008150 - biological process?" and the 2nd row of that column answers "Yes" for A1BG while the 8th row of that column answers "No" for A4D0T7.
+So an annotation matrix just provides organized answers to questions about (hopefully all) genes in the genome. In `humanGO` the question asked by each column is: "Is this gene annotated under this term?" and the elements of the column are populated with 1 for "Yes" and 0 for "No". So the 5th column asks "Is this gene annotated under GO:0008150 - biological process?" and the 2nd row of that column answers "Yes" for A1BG while the 8th row of that column answers "No" for A4D0T7.
 
 Other example questions an annotation matrix column could answer:
 * Is this gene expressed in the GTEx Tibial Artery tissue?
@@ -241,7 +241,7 @@ rownames(mat) = genes
 ```
 
 
-Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that annotation to 1 and all others to 0.  
+Then use a for loop over the annotation variables (columns) and set every gene (row) annotated under that annotation to 1 and all others to 0 (or the appropriate value if using a continuous annotation).  
 
 Depending on the data source it can get tricky dealing with annoyances like the semicolons and spaces in character vectors so it can be a bit tedious getting everything cleaned up into a matrix. Unless you're already fairly proficient in R this might take a long time to do.
 
@@ -268,7 +268,7 @@ tmp$`518_Known_Cancer_Genes` %>% unique %>% head()
 
 #### Biomart Approach
 
-I know BGA has a lecture on this but I'm not sure if you've had it yet. From the [Ensembl website](http://www.ensembl.org/biomart/martview/) you'd do something like
+I know BGA has a lecture on this but I'm not sure if you've had it yet. From the [Ensembl website](http://www.ensembl.org/biomart/martview/) you'd do something like:
 
 1. Start a new biomart view
 2. Select the ensembl genes database
